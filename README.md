@@ -1,9 +1,8 @@
 # Attendance_IoT
 
-
 1. Libraries 
 - ArduinoJson 5.11 - https://arduinojson.org/
-- rdm320
+- rdm630
 - Serial command
   
   
@@ -13,3 +12,14 @@
 - https://techtutorialsx.com/2016/07/21/esp8266-post-requests/
 - http://www.esp8266.com/viewtopic.php?f=29&t=14528
 - http://pi4j.com/example/
+
+
+3. API Queue sync - get
+- Event
+- rfid
+- student
+- staff
+
+4. API - post
+- rfid (non register row)
+- attendance
