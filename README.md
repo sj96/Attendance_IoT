@@ -23,3 +23,6 @@
 4. API - post
 - rfid (non register row)
 - attendance
+
+5. Link reference(s)
+- Github Project WebApp: https://github.com/ngthuc/NCKH-Attendance-with-CTU-ID-Card
