@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule ^get-([a-zA-Z]+)$ getTime.php?type=$1
+
+RewriteEngine on
+RewriteRule ^attendance$ attendance.php

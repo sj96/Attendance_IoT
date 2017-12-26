@@ -17,24 +17,16 @@
 #include <SPI.h>
 #include <SD.h>
 #include <SoftwareSerial.h>
-#include <SerialCommand.h>
 #include <Arduino.h>
 
 /*
    var
 */
-#define TX 11
-#define RX 10
-SoftwareSerial CMDSerial(RX, TX);    // The SoftwareSerial Object
-
-//SerialCommand sCmd(CMDSerial);   // The demo SerialCommand object, using the SoftwareSerial Constructor
-SerialCommand sCmd;
-
 rdm630 rfid(3, 4);  //TX-pin of RDM630 connected to Arduino pin D3
-const unsigned int ledPin = 13;
+const unsigned int ledPin = 12;
+
 File myFile;
-String eventId = "";
-String logId = "" ;
+String logFile = "";
 unsigned long  rfidCard, oldCard;
 
 unsigned long delaytime = 0;
@@ -42,43 +34,37 @@ unsigned long delaytimeLed = 0;
 
 void setup() {
   Serial.begin(115200);
-  CMDSerial.begin(115200);
   rfid.begin();
 
   pinMode(ledPin, OUTPUT);
-
-  // Một số hàm trong thư viện Serial Command
-  sCmd.addCommand("SetEvent", setEventID);
-  sCmd.addCommand("SetTime", setTimeLog);
-  sCmd.addCommand("New", haveNewRegistry);
-
-  //  //đợi cài đặt sự kiện và thời gian ghi log
-  //  while (eventId == "" || logId == "") {
-  //    if (Serial.available() > 0) {
-  //      String str = Serial.readStringUntil('/');
-  //      if (str == "Send Data")  {
-  //        Serial.println("Get Data/");
-  //        while (true) {
-  //          sCmd.readSerial();
-  //        }
-  //      }
-  //    } else delay(1000);
-  //  }
-  //ktra module SD card
+  
+  
   if (!SD.begin(2)) {
     Serial.println("Error 1");
     writeLog("Error: SD card module not connect.");
   }
-  Serial.println("readly");
-  //  writeLog("Time: " + logId);
-  //  writeLog("event: " + eventId);
+  while (logFile == "") {
+    if (Serial.available() > 0) {
+      logFile = Serial.readStringUntil('/');
+      logFile = Serial.readStringUntil('\n');
+      if (logFile != "") {
+        delay(1000);
+        Serial.println("OK");
+        Serial.println(logFile);
+      }
+    }
+  }
+  digitalWrite(ledPin, HIGH);
 }
 
 void loop() {
   //hàng chờ lệnh
-//  sCmd.readSerial();
-  //  if (eventId != "" && logId != "") {
-  //kiểm tra tính hiệu từ bộ đọc
+  if (Serial.available() > 0) {
+      String logStr = Serial.readStringUntil('\n');
+      writeLog(logStr);
+    }
+  
+  //xu li ma RFID tu the
   rfidCard = readRFID();
   if ( rfidCard != 0) {
     if (delaytime != 0 && oldCard == rfidCard) {
@@ -90,7 +76,7 @@ void loop() {
       delaytime = millis();
       oldCard = rfidCard;
       //      writeLog("Read RFID card");
-//      writeLogRFID(String(rfidCard));
+      //      writeLogRFID(String(rfidCard));
       Serial.println(rfidCard);
       //      CMDSerial.println("Attendance " + String(rfidCard));
     }
@@ -105,7 +91,6 @@ void loop() {
     delaytimeLed = 0;
     digitalWrite(ledPin, LOW);
   }
-  //  }
 }
 
 unsigned long int readRFID() {
@@ -124,36 +109,14 @@ unsigned long int readRFID() {
   return result;
 }
 
-void writeLog(String log) {
-  File logFile;
-  logFile = SD.open("log/" + logId + ".log", FILE_WRITE);
-  logFile.println(log);
-  logFile.close();
-}
-void writeLogRFID(String log) {
-  File logFile;
-  logFile = SD.open(eventId + ".log", FILE_WRITE);
-  if (!logFile) {
-    Serial.println("not open file");
-  }
-  logFile.println(log);
-  logFile.close();
-  //  Serial.println("log Rfid");
+void writeLog(String logStr) {
+  File logF;
+  logF = SD.open("log/" + logFile + ".log", FILE_WRITE);
+  logF.println(logStr);
+  logF.close();
+//  Serial.println(logStr);
 }
 
-//set event name: gán tên cho sự kiện để tạo file log điểm danh cho từng sự kiện riêng biệt
-void setEventID() {
-  char *arg;
-  arg = sCmd.next();
-  eventId = arg;
-  Serial.println("Set Event ID: done.");
-}
-void setTimeLog() {
-  char *arg;
-  arg = sCmd.next();
-  logId = arg;
-  Serial.println("Set Time: done.");
-}
 void haveNewRegistry() {
   Serial.println("New Registry.");
   digitalWrite(ledPin, HIGH);

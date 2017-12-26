@@ -24,6 +24,8 @@ int delayTime = -1;
 String event = "";
 String eventId = "";
 String date = "";
+String timeStart = "";
+String timeEnd = "";
 
 //SerialCommand sCmd;
 
@@ -45,44 +47,55 @@ void setup() {
   //kiểm tra kết nối host
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Connecting..");
+    //    Serial.println("Connecting..");
     printLCD("Connecting..", 0);
   }
-  Serial.println("Connected");
+  //  Serial.println("Connected");
   printLCD("Connected", 0);
-  Serial.println("Get Event - Time");
+  //  Serial.println("Get Event - Time");
   printLCD("Get Event - Time", 1);
   //lấy mã sự kiện
   String info = "";
   while (!readly()) {
-    Serial.println("Geting...");
+    //    Serial.println("Geting...");
     printLCD("Get Event - Time", 0);
     printLCD("Geting...", 1);
-    info = getInfo();
 
-    Serial.println("Geting... 1");
-    while (info == "Error") {
-      Serial.println("Geting... 2");
+    while (event == "" || event == "No Event") {
       info = getInfo();
-    }
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject& json = jsonBuffer.parseObject(info);
-    if ( json["event"].as<String>() == "No Event") printLCD("No Event", 1);
-    else {
-      eventId = json["id"].as<String>();
-      event = json["event"].as<String>();
-      date = json["date"].as<String>();
-      //
-      //      delay(5000);
-      //      Serial.print("SetEvent " + eventId + "\r\n");
-      //      delay(1000);
-      //      Serial.print("SetTime " + date + "\r\n");
 
+      while (info == "Error") {
+        info = getInfo();
+      }
+      StaticJsonBuffer<200> jsonBuffer;
+      JsonObject& json = jsonBuffer.parseObject(info);
+      if ( json["event"].as<String>() == "No Event") printLCD("No Event", 1);
+      else {
+        eventId = json["id"].as<String>();
+        event = json["event"].as<String>();
+        date = json["date"].as<String>();
+        timeStart = json["timeStart"].as<String>();
+        timeEnd = json["timeEnd"].as<String>();
+        while (true) {
+          Serial.println("/" + date + "_id-" + eventId);          
+          if (Serial.available() > 0) {
+            String ok = Serial.readStringUntil('\n');
+            if (ok = "OK") break;
+          }
+          delay(1000);
+        }
+      }
+      Serial.println("Event ID: " + eventId);
+      Serial.println("Event: " + event);
+      Serial.println("Date: " + date);
+      Serial.println("Time: " + timeStart + " - " + timeEnd);
     }
   }
   Serial.print("Get done");
   printLCD("Get done", 1);
   delay(500);
+  printLCD(event, 0);
+  printLCD(date, 1);
 }
 
 
@@ -91,7 +104,7 @@ void loop() {
   //    sCmd.readSerial();
   if (Serial.available() > 0) {
     int code = Serial.parseInt();
-    if (code > 0) {
+    if (code > 0 && code != 26) {
       attendance(String(code));
       Serial.println(code);
     }
@@ -119,12 +132,16 @@ void attendance(String rfid) {
   String name = json["name"].as<String>();
   String status = json["status"].as<String>();
   String time = json["time"].as<String>();
-  if (name.startsWith("New")) {
-    Serial.print("New\r\n");
-  }
+  //  if (name.startsWith("New")) {
+  //    Serial.print("New\r\n");
+  //  }
+  Serial.println(info);
   printLCD(name, 0);
-  if (time != "Attendance") {
+  if (status != "Attendance") {
     printLCD(status + " - " + time, 1);
+  }
+  else if (status == "Time Out") {
+    printLCD(status, 1);
   }
   else printLCD("Got roll-call", 1);
 }
@@ -147,8 +164,8 @@ String getInfo() {
   String post = String("key=") + privateKey;
   while (result == "Error") {
     result = Post(host + String("/getInfo.php"), post);
-    Serial.print("getInfo: ");
-    Serial.println(result);
+    //    Serial.print("getInfo: ");
+    //    Serial.println(result);
   }
   return result;
 }
@@ -181,8 +198,8 @@ String Post(String host, String post) {
     }
     http.end();
   }
-  Serial.print("Post: ");
-  Serial.println(result);
+  //  Serial.print("Post: ");
+  //  Serial.println(result);
   return result;
 }
 
