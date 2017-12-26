@@ -52,60 +52,60 @@ void setup() {
   sCmd.addCommand("SetTime", setTimeLog);
   sCmd.addCommand("New", haveNewRegistry);
 
-//  //đợi cài đặt sự kiện và thời gian ghi log
-//  while (eventId == "" || logId == "") {
-//    if (Serial.available() > 0) {
-//      String str = Serial.readStringUntil('/');
-//      if (str == "Send Data")  {
-//        Serial.println("Get Data/");
-//        while (true) {
-//          sCmd.readSerial();
-//        }
-//      }
-//    } else delay(1000);
-//  }
+  //  //đợi cài đặt sự kiện và thời gian ghi log
+  //  while (eventId == "" || logId == "") {
+  //    if (Serial.available() > 0) {
+  //      String str = Serial.readStringUntil('/');
+  //      if (str == "Send Data")  {
+  //        Serial.println("Get Data/");
+  //        while (true) {
+  //          sCmd.readSerial();
+  //        }
+  //      }
+  //    } else delay(1000);
+  //  }
   //ktra module SD card
   if (!SD.begin(2)) {
     Serial.println("Error 1");
     writeLog("Error: SD card module not connect.");
   }
   Serial.println("readly");
-//  writeLog("Time: " + logId);
-//  writeLog("event: " + eventId);
+  //  writeLog("Time: " + logId);
+  //  writeLog("event: " + eventId);
 }
 
 void loop() {
   //hàng chờ lệnh
-  sCmd.readSerial();
-  if (eventId != "" && logId != "") {
-    //kiểm tra tính hiệu từ bộ đọc
-    rfidCard = readRFID();
-    if ( rfidCard != 0) {
-      if (delaytime != 0 && oldCard == rfidCard) {
-        delaytime = millis();
-        delaytimeLed = delaytime;
-        digitalWrite(ledPin, HIGH) ;
-      }
-      else {
-        delaytime = millis();
-        oldCard = rfidCard;
-        //      writeLog("Read RFID card");
-        writeLogRFID(String(rfidCard));
-        Serial.println("Attendance-" + String(rfidCard)+"/");
-        //      CMDSerial.println("Attendance " + String(rfidCard));
-      }
+//  sCmd.readSerial();
+  //  if (eventId != "" && logId != "") {
+  //kiểm tra tính hiệu từ bộ đọc
+  rfidCard = readRFID();
+  if ( rfidCard != 0) {
+    if (delaytime != 0 && oldCard == rfidCard) {
+      delaytime = millis();
+      delaytimeLed = delaytime;
+      digitalWrite(ledPin, HIGH) ;
     }
     else {
-      if (millis() - delaytime > 2000 && delaytime > 0) {
-//        Serial.println("ok! next Card.");
-        delaytime = 0;
-      }
-    }
-    if (millis() - delaytimeLed > 1000 && delaytimeLed > 0) {
-      delaytimeLed = 0;
-      digitalWrite(ledPin, LOW);
+      delaytime = millis();
+      oldCard = rfidCard;
+      //      writeLog("Read RFID card");
+//      writeLogRFID(String(rfidCard));
+      Serial.println(rfidCard);
+      //      CMDSerial.println("Attendance " + String(rfidCard));
     }
   }
+  else {
+    if (millis() - delaytime > 1000 && delaytime > 0) {
+      //        Serial.println("ok! next Card.");
+      delaytime = 0;
+    }
+  }
+  if (millis() - delaytimeLed > 1000 && delaytimeLed > 0) {
+    delaytimeLed = 0;
+    digitalWrite(ledPin, LOW);
+  }
+  //  }
 }
 
 unsigned long int readRFID() {
@@ -138,7 +138,7 @@ void writeLogRFID(String log) {
   }
   logFile.println(log);
   logFile.close();
-//  Serial.println("log Rfid");
+  //  Serial.println("log Rfid");
 }
 
 //set event name: gán tên cho sự kiện để tạo file log điểm danh cho từng sự kiện riêng biệt

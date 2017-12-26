@@ -24,7 +24,10 @@
 - staff
 
 4. API - post
-- rfid (non register row)
+- rfid (non register row) 
+--	new RFID
+-- personalID = "new"+ random string length (7)
+-- isStudent = 2
 - attendance
 
 5. Link reference(s)

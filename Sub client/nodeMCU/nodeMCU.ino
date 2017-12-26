@@ -25,7 +25,7 @@ String event = "";
 String eventId = "";
 String date = "";
 
-SerialCommand sCmd;
+//SerialCommand sCmd;
 
 void setup() {
   //cài đặt LCD
@@ -72,11 +72,11 @@ void setup() {
       eventId = json["id"].as<String>();
       event = json["event"].as<String>();
       date = json["date"].as<String>();
-
-      delay(1000);
-      Serial.print("SetEvent " + eventId + "\r\n");
-//      delay(1000);
-//      Serial.print("SetTime " + date + "\r\n");
+      //
+      //      delay(5000);
+      //      Serial.print("SetEvent " + eventId + "\r\n");
+      //      delay(1000);
+      //      Serial.print("SetTime " + date + "\r\n");
 
     }
   }
@@ -90,29 +90,30 @@ void loop() {
   //  đợi lệnh
   //    sCmd.readSerial();
   if (Serial.available() > 0) {
-    String code = Serial.readStringUntil('-');
-    if (code == "Attendance") {
-      String rfid =  Serial.readStringUntil('/');
-      //      attendance(code);
-      Serial.println(code + " - " + rfid);
+    int code = Serial.parseInt();
+    if (code > 0) {
+      attendance(String(code));
+      Serial.println(code);
     }
   }
-  if (delayTime < 0) {
+
+  if (millis() - delayTime > 5000 && delayTime > 0) {
     printLCD(event, 0);
     printLCD(date, 1);
     //    Serial.println("Event: " + event);
     //    Serial.println("Time: " + date);
-  }
-  else {
-    delayTime--;
-  }
+    delayTime = -1;
 
+  }
+  //
+  //void attendance() {
+  //  String rfid = sCmd.next();
 }
-//
-//void attendance() {
-//  String rfid = sCmd.next();
 void attendance(String rfid) {
   String info = sendAttendance(rfid);
+
+  delayTime = millis();
+
   StaticJsonBuffer<300> jsonBuffer;
   JsonObject& json = jsonBuffer.parseObject(info);
   String name = json["name"].as<String>();
@@ -180,8 +181,8 @@ String Post(String host, String post) {
     }
     http.end();
   }
-  //  Serial.print("Post: ");
-  //  Serial.println(result);
+  Serial.print("Post: ");
+  Serial.println(result);
   return result;
 }
 
