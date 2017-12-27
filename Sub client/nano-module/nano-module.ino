@@ -50,7 +50,7 @@ void setup() {
       if (logFile != "") {
         delay(1000);
         Serial.println("OK");
-        Serial.println(logFile);
+//        Serial.println(logFile);
       }
     }
   }

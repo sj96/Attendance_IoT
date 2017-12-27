@@ -12,10 +12,11 @@
 //Khởi tạo với các chân
 LiquidCrystal lcd(D5, D0, D4, D3, D2, D1);
 
-const char* ssid = "68C/10a";
-const char* password =  "Khuvuc6@2017";
+const char* ssid = "PKOVER_WIFI";
+const char* password =  "01678911202";
 
-const String host = "http://192.168.1.7:80";
+const String host = "http://192.168.43.47:80";
+//const String host = "http://192.168.1.11:80";
 
 const char* privateKey = "b091f0444231106d8e7b796ae7508bb50fc9c17556118fe705266018a4173438";
 
@@ -24,6 +25,7 @@ int delayTime = -1;
 String event = "";
 String eventId = "";
 String date = "";
+String date2 = "";
 String timeStart = "";
 String timeEnd = "";
 
@@ -64,20 +66,19 @@ void setup() {
     while (event == "" || event == "No Event") {
       info = getInfo();
 
-      while (info == "Error") {
-        info = getInfo();
-      }
-      StaticJsonBuffer<200> jsonBuffer;
-      JsonObject& json = jsonBuffer.parseObject(info);
-      if ( json["event"].as<String>() == "No Event") printLCD("No Event", 1);
+      Serial.println(info);      
+      StaticJsonBuffer<500> jsonBuffer;
+      JsonObject& json = jsonBuffer.parseObject(info); 
+      event = json["event"].as<String>();
+      if (event == "" || event == "No Event") printLCD("No Event", 1);
       else {
-        eventId = json["id"].as<String>();
-        event = json["event"].as<String>();
+        eventId = json["id"].as<String>();        
         date = json["date"].as<String>();
+        date2 = json["date2"].as<String>();
         timeStart = json["timeStart"].as<String>();
         timeEnd = json["timeEnd"].as<String>();
         while (true) {
-          Serial.println("/" + date + "_id-" + eventId);          
+          Serial.println("/" + date2 + "ID" + eventId);          
           if (Serial.available() > 0) {
             String ok = Serial.readStringUntil('\n');
             if (ok = "OK") break;
@@ -85,15 +86,16 @@ void setup() {
           delay(1000);
         }
       }
+    }
       Serial.println("Event ID: " + eventId);
       Serial.println("Event: " + event);
       Serial.println("Date: " + date);
       Serial.println("Time: " + timeStart + " - " + timeEnd);
-    }
+    
   }
   Serial.print("Get done");
   printLCD("Get done", 1);
-  delay(500);
+  delay(5000);
   printLCD(event, 0);
   printLCD(date, 1);
 }
@@ -104,7 +106,7 @@ void loop() {
   //    sCmd.readSerial();
   if (Serial.available() > 0) {
     int code = Serial.parseInt();
-    if (code > 0 && code != 26) {
+    if (code > 0 && code > 100) {
       attendance(String(code));
       Serial.println(code);
     }

@@ -64,16 +64,20 @@ function attendance($rfid)
                 $status = "Attendance";
             }
         }
-//        var_dump(isAttendance($rfid, $event['id']));
+//        var_dump($info);
         // nếu điểm danh thành công thì thêm thông tin cho json trả về
         if ($result != null || $status == "Attendance" || $status == "Time Out") {
             if ($info['name'] != "New Registry") {
                 $json['name'] = utf8ToAscii($info['name']);
+                $json['name2'] = $info['name'];
+                $json['lastName'] = $info['lastName'];
             } else {
                 $json['name'] = $info['id'];
             }
+            $json['id'] = $info['id'];
             $json['status'] = $status;
-            $json['time'] = str_replace(":", "", $nowTime);
+//            $json['time'] = str_replace(":", "", $nowTime);
+            $json['time'] =  $nowTime;
 
             return json_encode($json);
         }
@@ -86,21 +90,24 @@ function getInfoRFID($rfid)
 {
     global $conn;
     $result = array();
-//    var_dump("SELECT * FROM `rfid` WHERE `idCard` = '" . $rfid . "'");
+
     $query = mysqli_query($conn, "SELECT * FROM `rfid` WHERE `idCard` = '" . $rfid . "'");
     // Kiểm tra RFID đã đăng ký hay chưa?
+//    var_dump($query->num_rows );
     if ($query->num_rows > 0) {
 //        var_dump("1");
         $query = mysqli_fetch_assoc($query);
         $istudent = $query['isStudent'];
         $id = $query['personalID'];
         if ($istudent == "1") {
-            $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT firstNameStudent FROM `student` WHERE idStudent = '" . $id . "';"));
+            $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `firstNameStudent`,`lastNameStudent` FROM `student` WHERE `StudentID` = '" . $id . "';"));
             $result['name'] = $row['firstNameStudent'];
+            $result['lastName'] = $row['lastNameStudent'];
             $result['id'] = $id;
         } else if ($istudent == "0") {
-            $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT firstNameStaff FROM `student` WHERE idStudent = '" . $id . "';"));
+            $row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT `firstNameStaff`, `lastNameStaff` FROM `staff` WHERE `StaffID` = '" . $id . "';"));
             $result['name'] = $row['firstNameStaff'];
+            $result['lastName'] = $row['lastNameStaff'];
             $result['id'] = $id;
         } else if ($istudent == "2") {
             $result['name'] = "New Registry";
@@ -130,7 +137,7 @@ function registryRFID($rfid)
 function getPersonalId($rfid)
 {
     global $conn;
-    $query = mysqli_query($conn, "SELECT `personalID` FROM `rfid` WHERE IdCard = '" . $rfid . "';");
+    $query = mysqli_query($conn, "SELECT `personalID` FROM `rfid` WHERE `idCard` = '" . $rfid . "';");
     return mysqli_fetch_assoc($query)['personalID'];
 }
 
@@ -140,7 +147,7 @@ function getEvent()
     $array = array();
     $result = mysqli_query($conn, "SELECT * FROM `event` JOIN (SELECT `value` FROM `setting` WHERE name = 'event') AS `eventname` ON `event`.`id` = `eventname`.`value`;");
 
-    if (!empty($result)) {
+    if ($result != null) {
         $result = mysqli_fetch_assoc($result);
 
         $array['id'] = $result['id'];
@@ -150,6 +157,26 @@ function getEvent()
         $array['date'] = $result['dateEvent'];
     }
     return $array;
+}
+
+function getEventList()
+{
+    global $conn;
+    $list = array();
+    $result = mysqli_query($conn, "SELECT * FROM `event` WHERE `dateEvent` = '" . date("Y-m-d") . "' AND `timeEnd` >= '" . changeTime("-30 minutes", date("H:i:s")) . "' AND `timeStart` <= '" . changeTime("+30 minutes", date("H:i:s")) . "';");
+
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $array = array();
+            $array['id'] = $row['id'];
+            $array['name'] = $row['nameEvent'];
+            $array['timeStart'] = $row['timeStart'];
+            $array['timeEnd'] = $row['timeEnd'];
+            $array['date'] = $row['dateEvent'];
+            array_push($list, $array);
+        }
+    }
+    return $list;
 }
 
 function isAttendance($rfid, $idEvent)

@@ -28,6 +28,7 @@ if (!empty($_POST["key"])) {
         }
 
         $json["date"] = date("d-m-Y");
+        $json["date2"] = date("dmY");
 
         echo json_encode($json);
     }
