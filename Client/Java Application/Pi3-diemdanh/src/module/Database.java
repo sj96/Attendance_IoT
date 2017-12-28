@@ -23,12 +23,12 @@ public class Database {
 
     private Connection connect = null;
 
-    public Database() {
+    public Database() throws ClassNotFoundException, SQLException {
         this.connect();
     }
 
-    private void connect() {
-        try {
+    private void connect() throws ClassNotFoundException , ClassNotFoundException, SQLException {
+        
             Class.forName("com.mysql.jdbc.Driver");
             // Setup the connection with the DB
 //            String host = "localhost:3307";
@@ -42,9 +42,7 @@ public class Database {
 //            String urlConnect = "jdbc:mysql://127.0.0.1:3306/" + database + "?useUnicode=true&characterEncoding=UTF-8";
             this.connect = DriverManager
                     .getConnection(urlConnect, username, password);
-        } catch (ClassNotFoundException | SQLException e) {
-            System.out.println("not connect. Error: " + e.getMessage());
-        }
+        
     }
     
     public void close(){

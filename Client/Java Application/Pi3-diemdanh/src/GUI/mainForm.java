@@ -31,6 +31,7 @@ public class mainForm extends javax.swing.JFrame {
         DashBoard.setBackground(clr);
         chooseEvent1.setMF(this);
         dashboard2.setMF(this);
+        sync1.setMF(this);
 
 //        auto.run();
     }
@@ -39,6 +40,9 @@ public class mainForm extends javax.swing.JFrame {
         this.event = event;
         this.eventID = eventID;
         evenName.setText(event);
+    }
+    public void setSyncText(String str){
+        syncStatus.setText(str);
     }
 
     public String GetEventID() {
@@ -228,7 +232,7 @@ public class mainForm extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(syncStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(54, 54, 54))
         );
         StatusLayout.setVerticalGroup(
             StatusLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,8 +303,12 @@ public class mainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try{
         module.Database db = new module.Database();
         db.update("UPDATE `setting` SET `value` = '' WHERE `id` = 1");
+        }catch (Exception e){
+            
+        }
     }//GEN-LAST:event_formWindowClosing
 
     /**

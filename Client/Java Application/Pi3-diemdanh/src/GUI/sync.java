@@ -15,12 +15,16 @@ import java.util.logging.Logger;
  * @author trana
  */
 public class sync extends javax.swing.JPanel {
-
+    private GUI.mainForm mf;
     /**
      * Creates new form sync
      */
     public sync() {
         initComponents();
+    }
+    
+    public void setMF(GUI.mainForm mf){
+        this.mf = mf;
     }
 
     /**
@@ -98,13 +102,14 @@ public class sync extends javax.swing.JPanel {
         module.table.Attendance attendance = new module.table.Attendance();
         module.Post post = new module.Post();
         try {
+            mf.setSyncText("Send Data");
             post.Update(module.Seting.server+"/rfids/posts", rfid.getData());
             post.Update(module.Seting.server+"/attendance/posts", attendance.getData());
-        } catch (SQLException ex) {
+            mf.setSyncText("none");
+        } catch (Exception ex) {
+             mf.setSyncText("none");
             Logger.getLogger(sync.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(sync.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -114,11 +119,14 @@ public class sync extends javax.swing.JPanel {
         module.table.RFID rfid = new module.table.RFID();
         
         try {
+            mf.setSyncText("update DB");
             event.syncData();
             student.syncData();
             staff.syncData();
             rfid.syncData();
+            mf.setSyncText("none");
         } catch (Exception ex) {
+            mf.setSyncText("none");
             Logger.getLogger(sync.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
