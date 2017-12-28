@@ -68,7 +68,7 @@
           <Color blue="ff" green="99" red="0" type="rgb"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\trana\Pictures\New folder (2)\sync-arrows.png"/>
+          <Image iconType="3" name="/GUI/sync-arrows.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Update database"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -91,7 +91,7 @@
           <Color blue="ff" green="99" red="0" type="rgb"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\Users\trana\Pictures\New folder (2)\sync-arrows.png"/>
+          <Image iconType="3" name="/GUI/sync-arrows.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Push Data Attendance"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
