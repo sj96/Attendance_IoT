@@ -49,7 +49,7 @@ public class sync extends javax.swing.JPanel {
         jLabel1.setText("Sync");
 
         jButton4.setBackground(new java.awt.Color(0, 153, 255));
-        jButton4.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\sync-arrows.png")); // NOI18N
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/sync-arrows.png"))); // NOI18N
         jButton4.setText("Update database");
         jButton4.setMaximumSize(new java.awt.Dimension(50, 50));
         jButton4.setMinimumSize(new java.awt.Dimension(50, 50));
@@ -61,7 +61,7 @@ public class sync extends javax.swing.JPanel {
         });
 
         jButton5.setBackground(new java.awt.Color(0, 153, 255));
-        jButton5.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\sync-arrows.png")); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/sync-arrows.png"))); // NOI18N
         jButton5.setText("Push Data Attendance");
         jButton5.setMaximumSize(new java.awt.Dimension(50, 50));
         jButton5.setMinimumSize(new java.awt.Dimension(50, 50));

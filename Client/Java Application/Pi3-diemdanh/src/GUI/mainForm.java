@@ -135,7 +135,7 @@ public class mainForm extends javax.swing.JFrame {
         navbar.setMinimumSize(new java.awt.Dimension(50, 320));
 
         DashBoard.setBackground(new java.awt.Color(0, 153, 255));
-        DashBoard.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\dashboard.png")); // NOI18N
+        DashBoard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/dashboard.png"))); // NOI18N
         DashBoard.setMaximumSize(new java.awt.Dimension(50, 50));
         DashBoard.setMinimumSize(new java.awt.Dimension(50, 50));
         DashBoard.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -146,7 +146,7 @@ public class mainForm extends javax.swing.JFrame {
         });
 
         Attendance.setBackground(new java.awt.Color(0, 153, 255));
-        Attendance.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\125544-32.png")); // NOI18N
+        Attendance.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/125544-32.png"))); // NOI18N
         Attendance.setToolTipText("");
         Attendance.setMaximumSize(new java.awt.Dimension(50, 50));
         Attendance.setMinimumSize(new java.awt.Dimension(50, 50));
@@ -158,7 +158,7 @@ public class mainForm extends javax.swing.JFrame {
         });
 
         chooseEvent.setBackground(new java.awt.Color(0, 153, 255));
-        chooseEvent.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\event.png")); // NOI18N
+        chooseEvent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/event.png"))); // NOI18N
         chooseEvent.setMaximumSize(new java.awt.Dimension(50, 50));
         chooseEvent.setMinimumSize(new java.awt.Dimension(50, 50));
         chooseEvent.setPreferredSize(new java.awt.Dimension(50, 50));
@@ -169,7 +169,7 @@ public class mainForm extends javax.swing.JFrame {
         });
 
         Sync.setBackground(new java.awt.Color(0, 153, 255));
-        Sync.setIcon(new javax.swing.ImageIcon("C:\\Users\\trana\\Pictures\\New folder (2)\\sync-arrows.png")); // NOI18N
+        Sync.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/sync-arrows.png"))); // NOI18N
         Sync.setMaximumSize(new java.awt.Dimension(50, 50));
         Sync.setMinimumSize(new java.awt.Dimension(50, 50));
         Sync.setPreferredSize(new java.awt.Dimension(50, 50));
