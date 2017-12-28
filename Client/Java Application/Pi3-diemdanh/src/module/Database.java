@@ -33,13 +33,13 @@ public class Database {
             // Setup the connection with the DB
 //            String host = "localhost:3307";
             String username = "root";
-            String password = "usbw";
-            String database = "diemdanh_nckh";
+            String password = "";
+            String database = "diemdanh_nckh_webservices";
 
 //            String password = "DiemDanh2017";
             
-            String urlConnect = "jdbc:mysql://127.0.0.1:3307/" + database + "?useUnicode=true&characterEncoding=UTF-8";
-//            String urlConnect = "jdbc:mysql://127.0.0.1:3306/" + database + "?useUnicode=true&characterEncoding=UTF-8";
+//            String urlConnect = "jdbc:mysql://127.0.0.1:3307/" + database + "?useUnicode=true&characterEncoding=UTF-8";
+            String urlConnect = "jdbc:mysql://127.0.0.1:3306/" + database + "?useUnicode=true&characterEncoding=UTF-8";
             this.connect = DriverManager
                     .getConnection(urlConnect, username, password);
         

@@ -83,7 +83,7 @@ public class Event {
                 row.put("descriptionEvent", resultSet.getString("descriptionEvent"));
                 row.put("userCreator", resultSet.getString("userCreator"));
                 row.put("idOrg", resultSet.getInt("idOrg"));
-                
+
                 table.add(row);
             }
             return table.toJSONString();
@@ -116,27 +116,37 @@ public class Event {
                 } else if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
                     delete(a.get("id").toString());
                     System.out.println("2");
-                    b = oldRow.next();
-                    while (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
-                        delete(b.get("id").toString());
+                    if (oldRow.hasNext()) {
                         b = oldRow.next();
-                        if (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString())) {
-                            insert(a);
-                        } else if (Integer.parseInt(a.get("id").toString()) == Integer.parseInt(b.get("id").toString())) {
-                            update(a.get("id").toString(), a);
-                            System.out.println("1");
+                        while (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
+                            delete(b.get("id").toString());
+                            if (oldRow.hasNext()) {
+                                b = oldRow.next();
+                                if (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString())) {
+                                    insert(a);
+                                } else if (Integer.parseInt(a.get("id").toString()) == Integer.parseInt(b.get("id").toString())) {
+                                    update(a.get("id").toString(), a);
+                                    System.out.println("1");
+                                }
+                            }
                         }
                     }
                 } else {
                     insert(a);
-                    a = newRow.next();
+                    if (newRow.hasNext()) {
+                        a = newRow.next();
+                    }
                     System.out.println("3");
                     while (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
                         insert(a);
-                        b = oldRow.next();
-                        if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
-                            delete(b.get("id").toString());
+                        if (oldRow.hasNext()) {
                             b = oldRow.next();
+                            if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
+                                delete(b.get("id").toString());
+                                if (oldRow.hasNext()) {
+                                    b = oldRow.next();
+                                }
+                            }
                         }
                     }
                 }
@@ -156,7 +166,7 @@ public class Event {
     // HTTP POST request
     private String getDataNew() throws Exception {
 
-        String host = module.Seting.server+"/events";
+        String host = module.Seting.server + "/events";
 
         module.Get get = new module.Get();
 

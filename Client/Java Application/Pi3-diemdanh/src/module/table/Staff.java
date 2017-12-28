@@ -90,8 +90,7 @@ public class Staff {
         }
     }
 
-    public boolean syncData() throws SQLException, Exception {
-        
+     public boolean syncData() throws SQLException, Exception {
         JSONParser parser = new JSONParser();
         String newData = getDataNew();
         Object obj = parser.parse(newData);
@@ -112,30 +111,39 @@ public class Staff {
                     update(a.get("id").toString(), a);
                     System.out.println("1");
                 } else if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
-                    delete(b.get("id").toString());
-                    System.out.println("3");
-                    b = oldRow.next();
-                    while (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
-                        delete(a.get("id").toString());
+                    delete(a.get("id").toString());
+                    System.out.println("2");
+                    if (oldRow.hasNext()) {
                         b = oldRow.next();
-                        if (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString())) {
-                            insert(a);
-                        } else if (Integer.parseInt(a.get("id").toString()) == Integer.parseInt(b.get("id").toString())) {
-                            update(a.get("id").toString(), a);
-                            System.out.println("1");
+                        while (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
+                            delete(b.get("id").toString());
+                            if (oldRow.hasNext()) {
+                                b = oldRow.next();
+                                if (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString())) {
+                                    insert(a);
+                                } else if (Integer.parseInt(a.get("id").toString()) == Integer.parseInt(b.get("id").toString())) {
+                                    update(a.get("id").toString(), a);
+                                    System.out.println("1");
+                                }
+                            }
                         }
                     }
                 } else {
                     insert(a);
-                    a = newRow.next();
-                    System.out.println("1");
+                    if (newRow.hasNext()) {
+                        a = newRow.next();
+                    }
+                    System.out.println("3");
                     while (Integer.parseInt(a.get("id").toString()) < Integer.parseInt(b.get("id").toString()) && oldRow.hasNext()) {
                         insert(a);
-                        b = oldRow.next();
-                        if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
-                            delete(b.get("id").toString());
+                        if (oldRow.hasNext()) {
                             b = oldRow.next();
-                            System.out.println("3");
+                            if (Integer.parseInt(a.get("id").toString()) > Integer.parseInt(b.get("id").toString())) {
+                                delete(b.get("id").toString());
+                                if (oldRow.hasNext()) {
+                                    b = oldRow.next();
+                                }
+                            }
                         }
                     }
                 }

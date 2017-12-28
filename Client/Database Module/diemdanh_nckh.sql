@@ -17,10 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `diemdanh_nckh`
+-- Database: `diemdanh_nckh_webservices`
 --
-CREATE DATABASE IF NOT EXISTS `diemdanh_nckh` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-USE `diemdanh_nckh`;
+CREATE DATABASE IF NOT EXISTS `diemdanh_nckh_webservices` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `diemdanh_nckh_webservices`;
 
 -- --------------------------------------------------------
 

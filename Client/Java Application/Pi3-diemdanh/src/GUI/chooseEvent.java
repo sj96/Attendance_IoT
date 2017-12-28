@@ -99,7 +99,7 @@ public class chooseEvent extends javax.swing.JPanel {
     
     private String getEventList() throws Exception {
 
-		String url = "http://localhost/getEvent.php";
+		String url = "http://localhost/nckh/IoT_Embedded/Client/Webservices/source/getEvent.php"; // URL Webservices
                 module.Post post = new module.Post();
                 return post.send(url, "");
 	}
