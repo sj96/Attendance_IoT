@@ -6,7 +6,10 @@
 package module.table;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,32 +37,20 @@ public class table {
     }
 
     //get all row in table
-    private String[] getData() {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query(new String());
-        String data[] = null;
-        return data;
+    private String getData() {
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query(new String());
+            String data = null;
+            return data;
+        } catch (Exception ex) {
+            Logger.getLogger(table.class.getName()).log(Level.SEVERE, null, ex);            
+            return "";
+        } 
     }
 
-    public boolean syncData(String data[][]) {
-        String[] oldData = getData();
-        for (String[] row : data) {
-
-            JSONParser parser = new JSONParser();
-            try {
-                Object obj = parser.parse("{ \"array\":[\"msg 1\",\"msg 2\",\"msg 3\"] }");
-
-                JSONObject jsonObject = (JSONObject) obj;
-                JSONArray msg = (JSONArray) jsonObject.get("array");
-                Iterator<JSONArray> iterator = msg.iterator();
-                while (iterator.hasNext()) {
-                    System.out.println(iterator.next().toJSONString());
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-        }
+    public boolean syncData() {
+        String oldData = getData();
 
         return true;
     }

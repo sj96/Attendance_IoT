@@ -12,6 +12,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import org.json.simple.JSONArray;
@@ -29,43 +31,66 @@ public class Event {
 
     // insert row 
     private void insert(JSONObject obj) {
-        db = new module.Database();
-        db.update("INSERT INTO `event`(`id`, `nameEvent`, `timeStart`, `timeEnd`, `dateEvent`, `locationEvent`, `descriptionEvent`, `userCreator`, `idOrg`)"
-                + " VALUES (" + obj.get("id") + ",'" + obj.get("nameEvent") + "','" + obj.get("timeStart") + "','" + obj.get("timeEnd") + "','" + obj.get("dateEvent") + "','" + obj.get("locationEvent") + "','" + obj.get("descriptionEvent") + "','" + obj.get("userCreator") + "'," + obj.get("idOrg") + ")");
+        try {
+            db = new module.Database();
+            db.update("INSERT INTO `event`(`id`, `nameEvent`, `timeStart`, `timeEnd`, `dateEvent`, `locationEvent`, `descriptionEvent`, `userCreator`, `idOrg`)"
+                    + " VALUES (" + obj.get("id") + ",'" + obj.get("nameEvent") + "','" + obj.get("timeStart") + "','" + obj.get("timeEnd") + "','" + obj.get("dateEvent") + "','" + obj.get("locationEvent") + "','" + obj.get("descriptionEvent") + "','" + obj.get("userCreator") + "'," + obj.get("idOrg") + ")");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // update row with id
     private void update(String id, JSONObject obj) {
-        db = new module.Database();
-        db.update("UPDATE `event` SET `nameEvent`='" + obj.get("nameEvent") + "',`timeStart`='" + obj.get("timeStart") + "',`timeEnd`='" + obj.get("timeEnd") + "',`dateEvent`='" + obj.get("dateEvent") + "',`locationEvent`='" + obj.get("locationEvent") + "',`descriptionEvent`='" + obj.get("descriptionEvent") + "',`userCreator`='" + obj.get("userCreator") + "',`idOrg`='" + obj.get("idOrg") + "' WHERE `id` =" + id);
+        try {
+            db = new module.Database();
+            db.update("UPDATE `event` SET `nameEvent`='" + obj.get("nameEvent") + "',`timeStart`='" + obj.get("timeStart") + "',`timeEnd`='" + obj.get("timeEnd") + "',`dateEvent`='" + obj.get("dateEvent") + "',`locationEvent`='" + obj.get("locationEvent") + "',`descriptionEvent`='" + obj.get("descriptionEvent") + "',`userCreator`='" + obj.get("userCreator") + "',`idOrg`='" + obj.get("idOrg") + "' WHERE `id` =" + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // delete row with id
     private void delete(String id) {
-        db = new module.Database();
-        db.update("DELETE FROM `event` WHERE `id` = " + id);
+        try {
+            db = new module.Database();
+            db.update("DELETE FROM `event` WHERE `id` = " + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //get all row in table
     public String getData() throws SQLException {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query("Select * from `event`");
-        JSONArray table = new JSONArray();
-        while (resultSet.next()) {
-            JSONObject row = new JSONObject();
-            row.put("id", resultSet.getInt("id"));
-            row.put("nameEvent", resultSet.getString("nameEvent"));
-            row.put("timeStart", resultSet.getString("timeStart"));
-            row.put("timeEnd", resultSet.getString("timeEnd"));
-            row.put("dateEvent", resultSet.getString("dateEvent"));
-            row.put("locationEvent", resultSet.getString("locationEvent"));
-            row.put("descriptionEvent", resultSet.getString("descriptionEvent"));
-            row.put("userCreator", resultSet.getString("userCreator"));
-            row.put("idOrg", resultSet.getInt("idOrg"));
-
-            table.add(row);
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query("Select * from `event`");
+            JSONArray table = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                row.put("id", resultSet.getInt("id"));
+                row.put("nameEvent", resultSet.getString("nameEvent"));
+                row.put("timeStart", resultSet.getString("timeStart"));
+                row.put("timeEnd", resultSet.getString("timeEnd"));
+                row.put("dateEvent", resultSet.getString("dateEvent"));
+                row.put("locationEvent", resultSet.getString("locationEvent"));
+                row.put("descriptionEvent", resultSet.getString("descriptionEvent"));
+                row.put("userCreator", resultSet.getString("userCreator"));
+                row.put("idOrg", resultSet.getInt("idOrg"));
+                
+                table.add(row);
+            }
+            return table.toJSONString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Event.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
-        return table.toJSONString();
     }
 
     public boolean syncData() throws SQLException, Exception {

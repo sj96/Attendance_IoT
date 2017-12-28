@@ -12,6 +12,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import org.json.simple.JSONArray;
@@ -26,20 +28,25 @@ public class Attendance {
     //get all row in table
 
     public String getData() throws SQLException {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query("Select * from `attendance`");
-        JSONArray table = new JSONArray();
-        while (resultSet.next()) {
-            JSONObject row = new JSONObject();
-            row.put("id", resultSet.getInt("id"));
-            row.put("idEvent", resultSet.getString("idEvent"));
-            row.put("idCard", resultSet.getString("idCard"));
-            row.put("timeIn", resultSet.getString("timeIn"));
-            row.put("timeOut", resultSet.getString("timeOut"));
-
-            table.add(row);
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query("Select * from `attendance`");
+            JSONArray table = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                row.put("id", resultSet.getInt("id"));
+                row.put("idEvent", resultSet.getString("idEvent"));
+                row.put("idCard", resultSet.getString("idCard"));
+                row.put("timeIn", resultSet.getString("timeIn"));
+                row.put("timeOut", resultSet.getString("timeOut"));
+                
+                table.add(row);
+            }
+            return table.toJSONString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Attendance.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
-        return table.toJSONString();
     }
 
 }

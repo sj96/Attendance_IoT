@@ -12,6 +12,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import org.json.simple.JSONArray;
@@ -29,39 +31,62 @@ public class RFID {
 
     // insert row 
     private void insert(JSONObject obj) {
-        db = new module.Database();
-        db.update("INSERT INTO `rfid`(`id`, `idCard`, `personalID`, `isStudent`)"
-                + " VALUES (" + obj.get("id") + ",'" + obj.get("idCard") + "','" + obj.get("personalID") + "'," + obj.get("isStudent") + ")");
-        System.out.println("INSERT INTO `rfid`(`id`, `idCard`, `personalID`, `isStudent`)"
-                + " VALUES (" + obj.get("id") + ",'" + obj.get("idCard") + "','" + obj.get("personalID") + "'," + obj.get("isStudent") + ")");
+        try {
+            db = new module.Database();
+            db.update("INSERT INTO `rfid`(`id`, `idCard`, `personalID`, `isStudent`)"
+                    + " VALUES (" + obj.get("id") + ",'" + obj.get("idCard") + "','" + obj.get("personalID") + "'," + obj.get("isStudent") + ")");
+//            System.out.println("INSERT INTO `rfid`(`id`, `idCard`, `personalID`, `isStudent`)"
+//                    + " VALUES (" + obj.get("id") + ",'" + obj.get("idCard") + "','" + obj.get("personalID") + "'," + obj.get("isStudent") + ")");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // update row with id
     private void update(String id, JSONObject obj) {
-        db = new module.Database();
-        db.update("UPDATE `rfid` SET `idCard`='" + obj.get("idCard") + "',`personalID`='" + obj.get("personalID") + "',`isStudent`='" + obj.get("isStudent") + "' WHERE `id` =" + id);
+        try {
+            db = new module.Database();
+            db.update("UPDATE `rfid` SET `idCard`='" + obj.get("idCard") + "',`personalID`='" + obj.get("personalID") + "',`isStudent`='" + obj.get("isStudent") + "' WHERE `id` =" + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // delete row with id
     private void delete(String id) {
-        db = new module.Database();
+        try {
+            db = new module.Database();
 //        db.update("DELETE FROM `rfid` WHERE `id` = " + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //get all row in table
     public String getData() throws SQLException {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query("Select * from `rfid`");
-        JSONArray table = new JSONArray();
-        while (resultSet.next()) {
-            JSONObject row = new JSONObject();
-            row.put("id", resultSet.getInt("id"));
-            row.put("idCard", resultSet.getString("idCard"));
-            row.put("personalID", resultSet.getString("personalID"));
-            row.put("isStudent", resultSet.getInt("isStudent"));
-            table.add(row);
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query("Select * from `rfid`");
+            JSONArray table = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                row.put("id", resultSet.getInt("id"));
+                row.put("idCard", resultSet.getString("idCard"));
+                row.put("personalID", resultSet.getString("personalID"));
+                row.put("isStudent", resultSet.getInt("isStudent"));
+                table.add(row);
+            }
+            return table.toJSONString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(RFID.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
-        return table.toJSONString();
     }
 
     public boolean syncData() throws SQLException, Exception {

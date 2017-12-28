@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,12 +78,18 @@ public class chooseEvent extends javax.swing.JPanel {
         sk.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                mf.setEvent(name, id);
-                mf.changeUIToAttendance();
-                
-                module.Database db = new module.Database();
-                db.update("UPDATE `setting` SET `value` = '"+id+"' WHERE `id` = 1");
-                System.out.println(name);                   
+                try {
+                    mf.setEvent(name, id);
+                    mf.changeUIToAttendance();
+                    
+                    module.Database db = new module.Database();
+                    db.update("UPDATE `setting` SET `value` = '"+id+"' WHERE `id` = 1");                   
+                    System.out.println(name);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(chooseEvent.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(chooseEvent.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         

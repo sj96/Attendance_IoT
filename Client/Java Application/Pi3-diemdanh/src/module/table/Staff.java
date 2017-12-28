@@ -12,6 +12,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import org.json.simple.JSONArray;
@@ -29,40 +31,63 @@ public class Staff {
 
     // insert row 
     private void insert(JSONObject obj) {
-        db = new module.Database();
-        db.update("INSERT INTO `staff`(`id`, `staffID`, `firstNameStaff`, `lastNameStaff`, `idDepartment`)"
-                + " VALUES (" + obj.get("id") + ",'" + obj.get("staffID") + "','" + obj.get("firstNameStaff") + "','" + obj.get("lastNameStaff") + "'," + obj.get("idDepartment") + ")");
+        try {
+            db = new module.Database();
+            db.update("INSERT INTO `staff`(`id`, `staffID`, `firstNameStaff`, `lastNameStaff`, `idDepartment`)"
+                    + " VALUES (" + obj.get("id") + ",'" + obj.get("staffID") + "','" + obj.get("firstNameStaff") + "','" + obj.get("lastNameStaff") + "'," + obj.get("idDepartment") + ")");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 
     // update row with id
     private void update(String id, JSONObject obj) {
-        db = new module.Database();
-        db.update("UPDATE `staff` SET `staffID`='" + obj.get("staffID") + "',`firstNameStaff`='" + obj.get("firstNameStaff") + "',`lastNameStaff`='" + obj.get("lastNameStaff") + "',`idDepartment`='" + obj.get("idDepartment") + "' WHERE `id` =" + id);
+        try {
+            db = new module.Database();
+            db.update("UPDATE `staff` SET `staffID`='" + obj.get("staffID") + "',`firstNameStaff`='" + obj.get("firstNameStaff") + "',`lastNameStaff`='" + obj.get("lastNameStaff") + "',`idDepartment`='" + obj.get("idDepartment") + "' WHERE `id` =" + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // delete row with id
     private void delete(String id) {
-        db = new module.Database();
-        db.update("DELETE FROM `staff` WHERE `id` = " + id);
+        try {
+            db = new module.Database();
+            db.update("DELETE FROM `staff` WHERE `id` = " + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //get all row in table
     public String getData() throws SQLException {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query("Select * from `staff`");
-        JSONArray table = new JSONArray();
-        while (resultSet.next()) {
-            JSONObject row = new JSONObject();
-            row.put("id", resultSet.getInt("id"));
-            row.put("staffID", resultSet.getString("staffID"));
-            row.put("firstNameStaff", resultSet.getString("firstNameStaff"));
-            row.put("lastNameStaff", resultSet.getString("lastNameStaff"));
-            row.put("idDepartment", resultSet.getInt("idDepartment"));
-
-            table.add(row);
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query("Select * from `staff`");
+            JSONArray table = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                row.put("id", resultSet.getInt("id"));
+                row.put("staffID", resultSet.getString("staffID"));
+                row.put("firstNameStaff", resultSet.getString("firstNameStaff"));
+                row.put("lastNameStaff", resultSet.getString("lastNameStaff"));
+                row.put("idDepartment", resultSet.getInt("idDepartment"));
+                
+                table.add(row);
+            }
+            return table.toJSONString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Staff.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
-        return table.toJSONString();
     }
 
     public boolean syncData() throws SQLException, Exception {

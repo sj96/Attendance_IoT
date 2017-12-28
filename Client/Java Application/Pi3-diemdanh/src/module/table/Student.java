@@ -12,6 +12,8 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 import org.json.simple.JSONArray;
@@ -29,39 +31,62 @@ public class Student {
 
     // insert row 
     private void insert(JSONObject obj) {
-        db = new module.Database();
-        db.update("INSERT INTO `student`(`id`, `studentID`, `firstNameStudent`, `lastNameStudent`, `idMajor`)"
-                + " VALUES (" + obj.get("id") + ",'" + obj.get("studentID") + "','" + obj.get("firstNameStudent") + "','" + obj.get("lastNameStudent") + "','" + obj.get("idMajor") + ")");
+        try {
+            db = new module.Database();
+            db.update("INSERT INTO `student`(`id`, `studentID`, `firstNameStudent`, `lastNameStudent`, `idMajor`)"
+                    + " VALUES (" + obj.get("id") + ",'" + obj.get("studentID") + "','" + obj.get("firstNameStudent") + "','" + obj.get("lastNameStudent") + "','" + obj.get("idMajor") + ")");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // update row with id
     private void update(String id, JSONObject obj) {
-        db = new module.Database();
-        db.update("UPDATE `student` SET `studentID`='" + obj.get("studentID") + "',`firstNameStudent`='" + obj.get("firstNameStudent") + "',`lastNameStudent`='" + obj.get("lastNameStudent") + "',`idMajor`='" + obj.get("idMajor") + "' WHERE `id` =" + id);
+        try {
+            db = new module.Database();
+            db.update("UPDATE `student` SET `studentID`='" + obj.get("studentID") + "',`firstNameStudent`='" + obj.get("firstNameStudent") + "',`lastNameStudent`='" + obj.get("lastNameStudent") + "',`idMajor`='" + obj.get("idMajor") + "' WHERE `id` =" + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     // delete row with id
     private void delete(String id) {
-        db = new module.Database();
-        db.update("DELETE FROM `student` WHERE `id` = " + id);
+        try {
+            db = new module.Database();
+            db.update("DELETE FROM `student` WHERE `id` = " + id);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //get all row in table
     public String getData() throws SQLException {
-        module.Database conn = new module.Database();
-        ResultSet resultSet = conn.query("Select * from `student`");
-        JSONArray table = new JSONArray();
-        while (resultSet.next()) {
-            JSONObject row = new JSONObject();
-            row.put("id", resultSet.getInt("id"));
-            row.put("studentID", resultSet.getString("studentID"));
-            row.put("firstNameStudent", resultSet.getString("firstNameStudent"));
-            row.put("lastNameStudent", resultSet.getString("lastNameStudent"));
-            row.put("idMajor", resultSet.getString("idMajor"));
-
-            table.add(row);
+        try {
+            module.Database conn = new module.Database();
+            ResultSet resultSet = conn.query("Select * from `student`");
+            JSONArray table = new JSONArray();
+            while (resultSet.next()) {
+                JSONObject row = new JSONObject();
+                row.put("id", resultSet.getInt("id"));
+                row.put("studentID", resultSet.getString("studentID"));
+                row.put("firstNameStudent", resultSet.getString("firstNameStudent"));
+                row.put("lastNameStudent", resultSet.getString("lastNameStudent"));
+                row.put("idMajor", resultSet.getString("idMajor"));
+                
+                table.add(row);
+            }
+            return table.toJSONString();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Student.class.getName()).log(Level.SEVERE, null, ex);
+            return "";
         }
-        return table.toJSONString();
     }
 
     public boolean syncData() throws SQLException, Exception {
